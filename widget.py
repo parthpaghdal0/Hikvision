@@ -17,6 +17,7 @@ ini_file_path = os.path.join(program_data_dir, 'hikvisionCRM', 'settings.ini')
 
 class Widget(QWidget, Ui_Widget):
     hotkeySignal = pyqtSignal()
+    hotkey = ''
     timer = QTimer()
 
     def __init__(self, parent=None):
@@ -25,6 +26,16 @@ class Widget(QWidget, Ui_Widget):
 
         self.l_settings_hotkey.hide()
         self.pb_settings_hotkey.hide()
+        self.camera.hide()
+        self.odbc.hide()
+        self.l_settings_companyid.hide()
+        self.le_settings_companyid.hide()
+        self.l_settings_delay.hide()
+        self.le_settings_delay.hide()
+        self.l_settings_license.hide()
+        self.te_settings_license.hide()
+
+        self.resize(240, 120)
 
         self.hotkeySignal.connect(self.on_hotkey_slot)
 
@@ -49,6 +60,7 @@ class Widget(QWidget, Ui_Widget):
         self.le_settings_userid.setText(settings.value("userid", "S5NICK"))
         self.le_settings_companyid.setText(settings.value("companyid"))
         self.le_settings_delay.setText(settings.value("delay", "5"))
+        self.hotkey = settings.value("hotkey", "Ctrl+Shift+Q")
         self.l_settings_hotkey.setText(settings.value("hotkey", "Ctrl+Shift+Q"))
         self.te_settings_license.setPlainText(settings.value("license"))
         settings.endGroup()
@@ -138,7 +150,7 @@ class Widget(QWidget, Ui_Widget):
             QMessageBox.warning(self, 'Warning', 'Connection was unsuccessful.')
 
     def on_hotkey_pressed(self, event):
-        if keyboard.is_pressed('CTRL+SHIFT+Q'):
+        if keyboard.is_pressed(self.hotkey):
             self.hotkeySignal.emit()
 
     def parseResult(self, row):
